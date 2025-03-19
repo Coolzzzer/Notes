@@ -1,14 +1,11 @@
-import React from 'react';
-import ButtonStyle from "./Button.module.css"
-
-type ButtonProps = {
-	children: React.ReactNode
-}
-
-export const Button:React.FC<ButtonProps> = ({children}) =>{
+import React,{useState} from 'react';
+import AddButton from "./Button.module.css";
+export const Button:React.FC = () =>{
+    const [text, setText] = useState<string>('Сохранить');
+    const clicked = () =>{
+        setText('Закрыть')
+    }
 	return(
-		<>
-				<button className={ButtonStyle.btn}>{children}</button>
-		</>
+			<button onClick={clicked}>{text}</button>
 	)
 }

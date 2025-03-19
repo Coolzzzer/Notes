@@ -1,9 +1,10 @@
 import React from 'react';
-import {Item} from './components/Item/Item'
+import {Item} from './components/Item/Item';
+import { Button } from './components/Button/Button';
 import './App.css';
 
 export const App: React.FC = () => {
-	const data: ItemProps[] = [
+	const data: { title: string; text: string; date: Date }[] = [
 		{
 			title : "Убедитесь, что TypeScript установлен",
 			text : "npm install typescript @types/react @types/react-dom --save-dev",
@@ -11,7 +12,7 @@ export const App: React.FC = () => {
 		},
 		{
 			title : "Добавьте файл tsconfig.json",
-			text : "Если его ещё нет, создайте файл tsconfig.json в корне проекта. Вот минимальная конфигурация, которая включает поддержку алиасов:",
+			text : "Если его ещё нет, создайте файл tsconfig.json в корне проекта.",
 			date : new Date()
 		},
 		{
@@ -22,15 +23,12 @@ export const App: React.FC = () => {
 	]
   return (
     <div className="app-container">
-			<Item
-				data = {data[0]}
-			/>
-			<Item
-				data = {data[1]}
-			/>
-						<Item
-				data = {data[2]}
-			/>
+		<Button/>
+		<div>
+			{data.map((item,index) =>(
+				<Item key = {index}	data = {item}/>
+			))}
+		</div>
     </div>
   );
 };
