@@ -4,7 +4,7 @@ export const AddButton:React.FC = () =>{
 	return(
 		<>
 			<button>
-				Новое воспоминание
+				<img src="plus.svg" width="10px"/> Новое воспоминание
 			</button>
 		</>
 	)
