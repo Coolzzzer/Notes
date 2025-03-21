@@ -1,9 +1,9 @@
-import HeaderStyles from "./AddButton.module.css";
+import HeaderStyles from "./Header.module.css";
 
 export const Header:React.FC = () =>{
 	return(
-        <>
-        
-        </>
+		<>
+			Logo
+		</>
 	)
 }
