@@ -1,14 +1,19 @@
 import LeftStyles from "./Left.module.css";
 import { Header } from "../../components/Header/Header";
-import { List } from "../../components/List/List";
 import { AddButton } from "../../components/AddButton/AddButton";
-export const Left:React.FC = () =>{
+
+type LeftProps = {
+	children: any
+}
+export const Left:React.FC<LeftProps> = ({children}) =>{
 
 	return(
 		<>
-			<Header/>
-			<AddButton/>
-			<List/>
+			<div className={LeftStyles.leftContainer}>
+				<Header/>
+				<AddButton/>
+				<div>{children}</div>
+			</div>
 		</>
 	)
 }
