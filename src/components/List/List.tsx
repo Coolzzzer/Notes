@@ -18,12 +18,19 @@ const sortItem = (a: { date: Date }, b: { date: Date }): number => {
 };
 
 export const List: React.FC<ListProps> = ({ items }) => {
-  return (
-    <div>
-      {items.sort(sortItem).map((el) => (
-        <Item key={el.id} data={el} />
-      ))}
-    </div>
-  );
+	
+	if (items.length===0){
+		
+		return <p>Записей нет</p>
+	}
+	if (items.length >= 1){
+		return (
+			<div>
+				{items.sort(sortItem).map((el) => (
+					<Item key={el.id} data={el}/>
+				))}
+			</div>
+		)
+	}
 };
 

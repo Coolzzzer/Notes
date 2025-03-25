@@ -20,23 +20,23 @@ export const Form: React.FC<FormProps> = ({ onSubmit }) => {
 
   return (
     <form className={FormStyles.formContainer} onSubmit={handleSubmit}>
-      <input
+      <input className={FormStyles.input}
         type="text"
         value={title}
         placeholder="Title"
         onChange={(e) => setTitle(e.target.value)}
       />
-      <textarea
+      <textarea className={FormStyles.textarea}
         value={text}
         placeholder="Text"
         onChange={(e) => setText(e.target.value)}
       />
-      <input
+      <input className={FormStyles.input}
         type="date"
         value={date.toISOString().substr(0, 10)}
         onChange={(e) => setDate(new Date(e.target.value))}
       />
-      <button type="submit">Сохранить</button>
+      <button className={FormStyles.button} type="submit">Сохранить</button>
     </form>
   );
 };

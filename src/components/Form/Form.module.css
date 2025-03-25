@@ -11,12 +11,7 @@
   max-width: 500px; 
   box-sizing: border-box;
   margin: 0 auto; 
-}
-
-.label {
-  font-size: 1rem;
-  color: #333;
-  font-weight: bold;
+	height: 100%;
 }
 
 .input,
@@ -32,7 +27,7 @@
 
 .textarea {
   resize: none; 
-  height: 100px; 
+  height: 200px; 
 }
 
 .input[type="date"] {
