@@ -25,7 +25,7 @@ export const List: React.FC<ListProps> = ({ items }) => {
 	}
 	if (items.length >= 1){
 		return (
-			<div>
+			<div className={ListStyles.content}>
 				{items.sort(sortItem).map((el) => (
 					<Item key={el.id} data={el}/>
 				))}

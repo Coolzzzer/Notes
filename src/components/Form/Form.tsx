@@ -6,32 +6,61 @@ type FormProps = {
 };
 
 export const Form: React.FC<FormProps> = ({ onSubmit }) => {
+	const [formValidState, setFormValidState] = useState({
+		title: true,
+		text: true,
+		date: true
+	})
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [date, setDate] = useState(new Date());
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit({ title, text, date });
-    setTitle("");
+	const handlerValidationForm = (e: React.FormEvent)=>{
+		e.preventDefault()
+		let isFormValid = true
+		if (!title?.trim().length){
+			setFormValidState(state =>({...state,title:false}))
+			isFormValid = false
+		} else{
+			setFormValidState(state =>({...state,title:true}))
+		}
+		if (!text?.trim().length){
+			setFormValidState(state =>({...state,text:false}))
+			isFormValid = false
+		} else{
+			setFormValidState(state =>({...state,text:true}))
+		}
+		if (!date){
+			setFormValidState(state =>({...state,date:false}))
+			isFormValid = false
+		}
+		else{
+			setFormValidState(state =>({...state,date:true}))
+		}
+		if(!isFormValid){
+			return;
+		}
+		handlerSubmit()
+	}
+	const handlerSubmit =()=>{
+		onSubmit({ title, text, date })
+		setTitle("");
     setText("");
     setDate(new Date());
-  };
-
+	}
   return (
-    <form className={FormStyles.formContainer} onSubmit={handleSubmit}>
-      <input className={FormStyles.input}
+    <form className={FormStyles.formContainer} onSubmit={handlerValidationForm}>
+      <input className={`${FormStyles.input} ${formValidState.title? '': FormStyles.inValid}`} 
         type="text"
         value={title}
         placeholder="Title"
         onChange={(e) => setTitle(e.target.value)}
       />
-      <textarea className={FormStyles.textarea}
+      <textarea className={`${FormStyles.textarea} ${formValidState.text? '': FormStyles.inValid}`} 
         value={text}
         placeholder="Text"
         onChange={(e) => setText(e.target.value)}
       />
-      <input className={FormStyles.input}
+      <input className={`${FormStyles.input} ${formValidState.date? '': FormStyles.inValid}`} 
         type="date"
         value={date.toISOString().substr(0, 10)}
         onChange={(e) => setDate(new Date(e.target.value))}
