@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Body } from "./panel/Body/Body";
 import { Left } from "./panel/Left/Left";
 import { List } from "./components/List/List";
@@ -10,30 +10,20 @@ type DataItem = {
   date: Date;
 };
 
-const INITIAL_DATA: DataItem[] = [
-  // {
-  //   id: 1,
-  //   title: "Убедитесь, что TypeScript установлен",
-  //   text: "npm install typescript @types/react @types/react-dom --save-dev",
-  //   date: new Date(),
-  // },
-  // {
-  //   id: 2,
-  //   title: "Добавьте файл tsconfig.json",
-  //   text: "Если его ещё нет, создайте файл tsconfig.json в корне проекта. Вот минимальная конфигурация, которая включает поддержку алиасов:",
-  //   date: new Date(),
-  // },
-  // {
-  //   id: 3,
-  //   title: "Подключите алиасы в vite.config.ts",
-  //   text: "Ваш текущий код уже поддерживает TypeScript. Вот готовый файл vite.config.ts:",
-  //   date: new Date(),
-  // },
-];
-
 export const App: React.FC = () => {
 
-  const [items, setItems] = useState<DataItem[]>(INITIAL_DATA);
+  const [items, setItems] = useState<DataItem[]>([]);
+
+	useEffect(()=>{
+		const data = localStorage.getItem('data')
+		if(data){
+			const parsedData = JSON.parse(data).map(item => ({
+				...item,
+				date: new Date(item.date)
+			}))
+			setItems(parsedData)
+		}
+	},[])
 
   const addItem = (item: Omit<DataItem, "id">) => {
     setItems((oldItems) => [

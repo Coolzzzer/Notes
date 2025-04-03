@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import FormStyles from "./Form.module.css";
+import cn from "classnames";
 
 type FormProps = {
   onSubmit: (item: { title: string; text: string; date: Date }) => void;
@@ -49,18 +50,24 @@ export const Form: React.FC<FormProps> = ({ onSubmit }) => {
 	}
   return (
     <form className={FormStyles.formContainer} onSubmit={handlerValidationForm}>
-      <input className={`${FormStyles.input} ${formValidState.title? '': FormStyles.inValid}`} 
+      <input className={cn(FormStyles.input, {
+				[FormStyles.inValid]: !formValidState.title
+			})} 
         type="text"
         value={title}
         placeholder="Title"
         onChange={(e) => setTitle(e.target.value)}
       />
-      <textarea className={`${FormStyles.textarea} ${formValidState.text? '': FormStyles.inValid}`} 
+      <textarea className={cn(FormStyles.textarea, {
+				[FormStyles.inValid]: !formValidState.text
+			})}
         value={text}
         placeholder="Text"
         onChange={(e) => setText(e.target.value)}
       />
-      <input className={`${FormStyles.input} ${formValidState.date? '': FormStyles.inValid}`} 
+      <input className={cn(FormStyles.input, {
+				[FormStyles.inValid]: !formValidState.date
+			})}
         type="date"
         value={date.toISOString().substr(0, 10)}
         onChange={(e) => setDate(new Date(e.target.value))}
