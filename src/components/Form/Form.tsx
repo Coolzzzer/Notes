@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import FormStyles from "./Form.module.css";
 import cn from "classnames";
 
@@ -6,12 +6,14 @@ type FormProps = {
   onSubmit: (item: { title: string; text: string; date: Date }) => void;
 };
 
+const INITIAL_STATE = {
+	title: true,
+	text: true,
+	date: true
+}
+
 export const Form: React.FC<FormProps> = ({ onSubmit }) => {
-	const [formValidState, setFormValidState] = useState({
-		title: true,
-		text: true,
-		date: true
-	})
+	const [formValidState, setFormValidState] = useState(INITIAL_STATE)
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [date, setDate] = useState(new Date());
@@ -48,6 +50,17 @@ export const Form: React.FC<FormProps> = ({ onSubmit }) => {
     setText("");
     setDate(new Date());
 	}
+	useEffect(()=>{
+		let timerId:any;
+		if(!formValidState.date || !formValidState.text || !formValidState.title){
+			timerId = setTimeout(()=>{
+				setFormValidState(INITIAL_STATE)
+			},2000)
+		}
+		return ()=>{
+			clearTimeout(timerId)
+		}
+	},[formValidState])
   return (
     <form className={FormStyles.formContainer} onSubmit={handlerValidationForm}>
       <input className={cn(FormStyles.input, {

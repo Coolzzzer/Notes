@@ -17,13 +17,19 @@ export const App: React.FC = () => {
 	useEffect(()=>{
 		const data = localStorage.getItem('data')
 		if(data){
-			const parsedData = JSON.parse(data).map(item => ({
+			const parsedData = JSON.parse(data).map((item: Omit<DataItem, 'date'> & { date: string }) => ({
 				...item,
 				date: new Date(item.date)
 			}))
 			setItems(parsedData)
 		}
 	},[])
+
+	useEffect(()=>{
+		if(items.length){
+			localStorage.setItem('data',JSON.stringify(items))
+		}
+	},[items])
 
   const addItem = (item: Omit<DataItem, "id">) => {
     setItems((oldItems) => [
