@@ -58,7 +58,7 @@
   background-color: #ccc; 
   cursor: not-allowed;
 }
-.inValid{
+.isValid{
 	border: 1px solid red;
 	background: rgba(202, 16, 16, 0.753);
 	color: white;

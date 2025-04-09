@@ -1,89 +1,68 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useReducer } from "react";
 import FormStyles from "./Form.module.css";
 import cn from "classnames";
+import { INITIAL_STATE, formReducer } from "./Form.state";
 
 type FormProps = {
   onSubmit: (item: { title: string; text: string; date: Date }) => void;
 };
 
-const INITIAL_STATE = {
-	title: true,
-	text: true,
-	date: true
-}
-
 export const Form: React.FC<FormProps> = ({ onSubmit }) => {
-	const [formValidState, setFormValidState] = useState(INITIAL_STATE)
-  const [title, setTitle] = useState("");
-  const [text, setText] = useState("");
-  const [date, setDate] = useState(new Date());
-	const handlerValidationForm = (e: React.FormEvent)=>{
-		e.preventDefault()
-		let isFormValid = true
-		if (!title?.trim().length){
-			setFormValidState(state =>({...state,title:false}))
-			isFormValid = false
-		} else{
-			setFormValidState(state =>({...state,title:true}))
-		}
-		if (!text?.trim().length){
-			setFormValidState(state =>({...state,text:false}))
-			isFormValid = false
-		} else{
-			setFormValidState(state =>({...state,text:true}))
-		}
-		if (!date){
-			setFormValidState(state =>({...state,date:false}))
-			isFormValid = false
-		}
-		else{
-			setFormValidState(state =>({...state,date:true}))
-		}
-		if(!isFormValid){
-			return;
-		}
-		handlerSubmit()
-	}
-	const handlerSubmit =()=>{
-		onSubmit({ title, text, date })
-		setTitle("");
-    setText("");
-    setDate(new Date());
-	}
+
+	const [formState, dispatchForm] = useReducer(formReducer,INITIAL_STATE)
+	const {isValid, isFormReadyToSubmit, values} = formState
+
 	useEffect(()=>{
-		let timerId:any;
-		if(!formValidState.date || !formValidState.text || !formValidState.title){
+		if(isFormReadyToSubmit){
+			onSubmit(values)
+			dispatchForm({type: 'CLEAR'})
+		}
+	},[isFormReadyToSubmit])
+	// const onChange = (e: React.FormEvent)=>{
+	// 	dispatchForm({type: "SET_VALUE", payload: [e.target.name: e.target.value]})
+	// }
+  const handlerValidationForm = (e: React.FormEvent) => {
+    e.preventDefault();
+		const formData = new FormData(e.target as HTMLFormElement);
+    const formProps = Object.fromEntries(formData.entries());
+    const payload = {
+			title: formProps.title as string,
+      text: formProps.text as string,
+      date: formProps.date ? new Date(formProps.date as string) : undefined,
+    };
+    dispatchForm({ type: "SUBMIT", payload });
+  };
+	useEffect(()=>{
+		let timerId: ReturnType<typeof setTimeout>;
+		if(!isValid.date || !isValid.text || !isValid.title){
 			timerId = setTimeout(()=>{
-				setFormValidState(INITIAL_STATE)
+				dispatchForm({type: 'RESET_VALIDITY'})
 			},2000)
 		}
 		return ()=>{
 			clearTimeout(timerId)
 		}
-	},[formValidState])
+	},[isValid])
   return (
     <form className={FormStyles.formContainer} onSubmit={handlerValidationForm}>
       <input className={cn(FormStyles.input, {
-				[FormStyles.inValid]: !formValidState.title
+				[FormStyles.isValid]: !isValid.title
 			})} 
         type="text"
-        value={title}
         placeholder="Title"
-        onChange={(e) => setTitle(e.target.value)}
+				name="title"	
       />
       <textarea className={cn(FormStyles.textarea, {
-				[FormStyles.inValid]: !formValidState.text
+				[FormStyles.isValid]: !isValid.text
 			})}
-        value={text}
         placeholder="Text"
-        onChange={(e) => setText(e.target.value)}
+				name="text"	
       />
       <input className={cn(FormStyles.input, {
-				[FormStyles.inValid]: !formValidState.date
+				[FormStyles.isValid]: !isValid.date
 			})}
+				name="date"	
         type="date"
-        value={date.toISOString().substr(0, 10)}
-        onChange={(e) => setDate(new Date(e.target.value))}
       />
       <button className={FormStyles.button} type="submit">Сохранить</button>
     </form>
