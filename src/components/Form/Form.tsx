@@ -11,16 +11,8 @@ export const Form: React.FC<FormProps> = ({ onSubmit }) => {
 
 	const [formState, dispatchForm] = useReducer(formReducer,INITIAL_STATE)
 	const {isValid, isFormReadyToSubmit, values} = formState
-
-	useEffect(()=>{
-		if(isFormReadyToSubmit){
-			onSubmit(values)
-			dispatchForm({type: 'CLEAR'})
-		}
-	},[isFormReadyToSubmit])
-	// const onChange = (e: React.FormEvent)=>{
-	// 	dispatchForm({type: "SET_VALUE", payload: [e.target.name: e.target.value]})
-	// }
+	
+	
   const handlerValidationForm = (e: React.FormEvent) => {
     e.preventDefault();
 		const formData = new FormData(e.target as HTMLFormElement);
@@ -32,6 +24,19 @@ export const Form: React.FC<FormProps> = ({ onSubmit }) => {
     };
     dispatchForm({ type: "SUBMIT", payload });
   };
+
+	const handlerOnChange = (e: React.FormEvent)=>{
+		dispatchForm({type: 'SET_VALUE', payload: {[e.target.name]: e.target.value}})
+	}
+
+	useEffect(() => {
+		if (isFormReadyToSubmit) {
+			onSubmit(values);
+			dispatchForm({ type: 'CLEAR'});
+		}
+	}, [isFormReadyToSubmit]);
+
+
 	useEffect(()=>{
 		let timerId: ReturnType<typeof setTimeout>;
 		if(!isValid.date || !isValid.text || !isValid.title){
@@ -43,6 +48,8 @@ export const Form: React.FC<FormProps> = ({ onSubmit }) => {
 			clearTimeout(timerId)
 		}
 	},[isValid])
+
+
   return (
     <form className={FormStyles.formContainer} onSubmit={handlerValidationForm}>
       <input className={cn(FormStyles.input, {
@@ -51,18 +58,24 @@ export const Form: React.FC<FormProps> = ({ onSubmit }) => {
         type="text"
         placeholder="Title"
 				name="title"	
+				value={values.title}
+				onChange={handlerOnChange}
       />
       <textarea className={cn(FormStyles.textarea, {
 				[FormStyles.isValid]: !isValid.text
 			})}
         placeholder="Text"
 				name="text"	
+				value={values.text}
+				onChange={handlerOnChange}
       />
       <input className={cn(FormStyles.input, {
 				[FormStyles.isValid]: !isValid.date
 			})}
 				name="date"	
         type="date"
+				value={values.date}
+				onChange={handlerOnChange}
       />
       <button className={FormStyles.button} type="submit">Сохранить</button>
     </form>
