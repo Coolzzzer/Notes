@@ -3,8 +3,7 @@ type FormAction =
   | { type: "RESET_VALIDITY" }
 	| { type: "SET_VALUE"; payload: object}
 	| { type: "CLEAR" }
-  | { type: "SUBMIT"; payload: { title: string; text: string; date: Date | undefined } 
-};
+  | { type: "SUBMIT"};
 
 export const INITIAL_STATE = {
 	isValid: {
@@ -15,7 +14,7 @@ export const INITIAL_STATE = {
 	values:{
 		title: '',
 		text: '',
-		date: undefined
+		date: ''
 	},
 	isFormReadyToSubmit: false
 }
@@ -23,18 +22,22 @@ export const INITIAL_STATE = {
 export const formReducer = (state: FormState, action: FormAction) =>{
 	switch(action.type){
 		case 'SET_VALUE':
-			return {...state,	values: {...state, ...action.payload}}
+			return { ...state, values: { ...state.values, ...action.payload } };
 		case 'CLEAR':
-			return {...state,	values: INITIAL_STATE.values}
+			return {...INITIAL_STATE}
 		case 'RESET_VALIDITY':
 			return {...state, isValid: INITIAL_STATE.isValid};
 		case 'SUBMIT':{
-			const titleValidity = action.payload.title?.trim().length;
-			const textValidity = action.payload.text?.trim().length;
-			const dateValidity = action.payload.date;
+			const titleValidity = Boolean(state.values.title?.trim().length);
+			const textValidity = Boolean(state.values.text?.trim().length);
+			const dateValidity = Boolean(state.values.date);
 			return {
 				...state,
-				values: action.payload,
+				values:{
+					title: state.values.title ,
+					text: state.values.text ,
+					date: new Date(state.values.date as string)
+				},
 				isValid: {
 					title: titleValidity ,
 					text: textValidity ,

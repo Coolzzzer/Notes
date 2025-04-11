@@ -12,17 +12,10 @@ export const Form: React.FC<FormProps> = ({ onSubmit }) => {
 	const [formState, dispatchForm] = useReducer(formReducer,INITIAL_STATE)
 	const {isValid, isFormReadyToSubmit, values} = formState
 	
-	
   const handlerValidationForm = (e: React.FormEvent) => {
     e.preventDefault();
-		const formData = new FormData(e.target as HTMLFormElement);
-    const formProps = Object.fromEntries(formData.entries());
-    const payload = {
-			title: formProps.title as string,
-      text: formProps.text as string,
-      date: formProps.date ? new Date(formProps.date as string) : undefined,
-    };
-    dispatchForm({ type: "SUBMIT", payload });
+		// date: formProps.date ? new Date(formProps.date as string) : undefined,
+    dispatchForm({ type: "SUBMIT"});
   };
 
 	const handlerOnChange = (e: React.FormEvent)=>{
@@ -48,7 +41,6 @@ export const Form: React.FC<FormProps> = ({ onSubmit }) => {
 			clearTimeout(timerId)
 		}
 	},[isValid])
-
 
   return (
     <form className={FormStyles.formContainer} onSubmit={handlerValidationForm}>
