@@ -1,7 +1,8 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useRef } from "react";
 import FormStyles from "./Form.module.css";
 import cn from "classnames";
 import { INITIAL_STATE, formReducer } from "./Form.state";
+import { Input } from "../Input/Input";
 
 type FormProps = {
   onSubmit: (item: { title: string; text: string; date: Date }) => void;
@@ -10,7 +11,24 @@ type FormProps = {
 export const Form: React.FC<FormProps> = ({ onSubmit }) => {
   const [formState, dispatchForm] = useReducer(formReducer, INITIAL_STATE);
   const { isValid, isFormReadyToSubmit, values } = formState;
+	const titleRef = useRef<HTMLInputElement>(null);
+	const textRef = useRef<HTMLTextAreaElement>(null);
+	const dateRef = useRef<HTMLInputElement>(null);
+	
 
+	const focusError = (isValid:any)=>{
+		switch(true) {
+			case !isValid.title:
+				titleRef.current.focus();
+				break;
+			case !isValid.text:
+				textRef.current.focus();
+				break;
+			case !isValid.date:
+				dateRef.current.focus();
+				break;
+		}
+	}
   const handlerValidationForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatchForm({ type: "SUBMIT" });
@@ -28,11 +46,12 @@ export const Form: React.FC<FormProps> = ({ onSubmit }) => {
       });
       dispatchForm({ type: "CLEAR" });
     }
-  }, [isFormReadyToSubmit, onSubmit, values]);
+  }, [isFormReadyToSubmit, values, onSubmit]);
 
   useEffect(() => {
     let timerId: ReturnType<typeof setTimeout>;
     if (!isValid.date || !isValid.text || !isValid.title) {
+			focusError(isValid)
       timerId = setTimeout(() => {
         dispatchForm({ type: "RESET_VALIDITY" });
       }, 2000);
@@ -44,11 +63,10 @@ export const Form: React.FC<FormProps> = ({ onSubmit }) => {
 
   return (
     <form className={FormStyles.formContainer} onSubmit={handlerValidationForm}>
-      <input
-        className={cn(FormStyles.input, {
-          [FormStyles.isValid]: !isValid.title,
-        })}
+      <Input
+				isValid={isValid.title}
         type="text"
+				ref={titleRef}
         placeholder="Title"
         name="title"
         value={values.title}
@@ -60,22 +78,22 @@ export const Form: React.FC<FormProps> = ({ onSubmit }) => {
         })}
         placeholder="Text"
         name="text"
+				ref={textRef}
         value={values.text}
         onChange={handlerOnChange}
       />
-      <input
-        className={cn(FormStyles.input, {
-          [FormStyles.isValid]: !isValid.date,
-        })}
-        name="date"
-        type="date"
-        value={
-          values.date
-            ? new Date(values.date).toISOString().substring(0, 10)
-            : ""
-        }
-        onChange={handlerOnChange}
-      />
+			<Input
+				isValid={isValid.date}
+				name="date"
+				type="date"
+				ref={dateRef}
+				value={
+					values.date
+						? new Date(values.date).toISOString().substring(0, 10)
+						: ""
+				}
+				onChange={handlerOnChange}
+			/>
       <button className={FormStyles.button} type="submit">
         Сохранить
       </button>
