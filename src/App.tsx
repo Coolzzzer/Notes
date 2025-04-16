@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Body } from "./panel/Body/Body";
 import { Left } from "./panel/Left/Left";
 import { List } from "./components/List/List";
+import { useLocalstorage } from "./hooks/useLocalstorage";
 
-type DataItem = {
+export type DataItem = {
   id: number;
   title: string;
   text: string;
@@ -12,39 +13,34 @@ type DataItem = {
 
 export const App: React.FC = () => {
 
-  const [items, setItems] = useState<DataItem[]>([]);
+  const [items, setItems] = useLocalstorage<DataItem[]>('data', []);
 
-	useEffect(()=>{
-		const data = localStorage.getItem('data')
-		if(data){
-			const parsedData = JSON.parse(data).map((item: Omit<DataItem, 'date'> & { date: string }) => ({
-				...item,
-				date: new Date(item.date)
-			}))
-			setItems(parsedData)
+	const mapItems = (items: DataItem[]) =>{
+		if (!items){
+			return []
 		}
-	},[])
-
-	useEffect(()=>{
-		if(items.length){
-			localStorage.setItem('data',JSON.stringify(items))
-		}
-	},[items])
+		return items.map(i => ({
+      ...i,
+			date: new Date(i.date)
+		}))
+	}
 
   const addItem = (item: Omit<DataItem, "id">) => {
-    setItems((oldItems) => [
-      ...oldItems,
-      {
-        id: (oldItems.length > 0 ? Math.max(...oldItems.map((i) => i.id)) + 1 : 1),
-        ...item,
-      },
-    ]);
+    setItems([
+			...mapItems(items), 
+			{
+				title: item.title,
+				text: item.text,
+				date: new Date(item.date),
+        id: items.length > 0 ? Math.max(...items.map((i) => i.id)) + 1 : 1
+      }
+		]);
   };
 
   return (
     <div style={{ display: "flex", width: "150vh"}}>
 			<Left>
-				<List items={items} />
+				<List items={mapItems(items)} />
 			</Left>
 			<Body addItem={addItem} />
     </div>

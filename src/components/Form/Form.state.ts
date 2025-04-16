@@ -1,9 +1,10 @@
-type FormState = typeof INITIAL_STATE;
-type FormAction =
+export type FormState = typeof INITIAL_STATE;
+
+export type FormAction =
   | { type: "RESET_VALIDITY" }
-	| { type: "SET_VALUE"; payload: Partial<{ title: string; text: string; date: string }> }
-	| { type: "CLEAR" }
-  | { type: "SUBMIT"};
+  | { type: "SET_VALUE"; payload: Partial<{ title: string; text: string; date: string }> }
+  | { type: "CLEAR" }
+  | { type: "SUBMIT" };
 
 export const INITIAL_STATE = {
   isValid: {

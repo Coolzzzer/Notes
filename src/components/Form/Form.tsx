@@ -16,16 +16,22 @@ export const Form: React.FC<FormProps> = ({ onSubmit }) => {
 	const dateRef = useRef<HTMLInputElement>(null);
 	
 
-	const focusError = (isValid:any)=>{
+	const focusError = (isValid:{ title:boolean, text:boolean, date:boolean})=>{
 		switch(true) {
 			case !isValid.title:
-				titleRef.current.focus();
+				if (titleRef.current) {
+					titleRef.current.focus();
+				}
 				break;
 			case !isValid.text:
-				textRef.current.focus();
+				if (textRef.current) {
+					textRef.current.focus();
+				}
 				break;
 			case !isValid.date:
-				dateRef.current.focus();
+				if (dateRef.current) {
+					dateRef.current.focus();
+				}
 				break;
 		}
 	}
