@@ -1,5 +1,6 @@
 import React from 'react';
 import ItemStyles from "./Item.module.css";
+
 type ItemProps = {
 	data: {
 		id: number;

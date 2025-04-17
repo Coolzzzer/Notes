@@ -3,12 +3,14 @@ import { Body } from "./panel/Body/Body";
 import { Left } from "./panel/Left/Left";
 import { List } from "./components/List/List";
 import { useLocalstorage } from "./hooks/useLocalstorage";
+import { UserContextProvider } from "./context/user.context";
 
 export type DataItem = {
   id: number;
   title: string;
   text: string;
   date: Date;
+	userId: number
 };
 
 export const App: React.FC = () => {
@@ -29,20 +31,21 @@ export const App: React.FC = () => {
     setItems([
 			...mapItems(items), 
 			{
-				title: item.title,
-				text: item.text,
+				...item,
 				date: new Date(item.date),
         id: items.length > 0 ? Math.max(...items.map((i) => i.id)) + 1 : 1
+				
       }
 		]);
   };
-
   return (
-    <div style={{ display: "flex", width: "150vh"}}>
-			<Left>
-				<List items={mapItems(items)} />
-			</Left>
-			<Body addItem={addItem} />
-    </div>
+		<UserContextProvider>
+			<div style={{ display: "flex", width: "150vh"}}>
+				<Left>
+					<List items={mapItems(items)} />
+				</Left>
+				<Body addItem={addItem} />
+			</div>
+		</UserContextProvider>
   );
 };

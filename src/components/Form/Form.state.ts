@@ -2,7 +2,7 @@ export type FormState = typeof INITIAL_STATE;
 
 export type FormAction =
   | { type: "RESET_VALIDITY" }
-  | { type: "SET_VALUE"; payload: Partial<{ title: string; text: string; date: string }> }
+  | { type: "SET_VALUE"; payload: Partial<{ title: string; text: string; date: string; userId: number }> }
   | { type: "CLEAR" }
   | { type: "SUBMIT" };
 

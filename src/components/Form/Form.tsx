@@ -1,11 +1,12 @@
-import React, { useEffect, useReducer, useRef } from "react";
+import React, { useEffect, useReducer, useRef, useContext } from "react";
 import FormStyles from "./Form.module.css";
+import { UserContext } from "../../context/user.context";
 import cn from "classnames";
 import { INITIAL_STATE, formReducer } from "./Form.state";
 import { Input } from "../Input/Input";
 
 type FormProps = {
-  onSubmit: (item: { title: string; text: string; date: Date }) => void;
+  onSubmit: (item: { title: string; text: string; date: Date; userId: number }) => void;
 };
 
 export const Form: React.FC<FormProps> = ({ onSubmit }) => {
@@ -14,8 +15,8 @@ export const Form: React.FC<FormProps> = ({ onSubmit }) => {
 	const titleRef = useRef<HTMLInputElement>(null);
 	const textRef = useRef<HTMLTextAreaElement>(null);
 	const dateRef = useRef<HTMLInputElement>(null);
+	const {userId} = useContext(UserContext);
 	
-
 	const focusError = (isValid:{ title:boolean, text:boolean, date:boolean})=>{
 		switch(true) {
 			case !isValid.title:
@@ -48,6 +49,7 @@ export const Form: React.FC<FormProps> = ({ onSubmit }) => {
     if (isFormReadyToSubmit) {
       onSubmit({
         ...values,
+				userId: userId,
         date: new Date(values.date as string),
       });
       dispatchForm({ type: "CLEAR" });
@@ -67,27 +69,31 @@ export const Form: React.FC<FormProps> = ({ onSubmit }) => {
     };
   }, [isValid]);
 
+	useEffect(()=>{
+		dispatchForm({ type: "SET_VALUE", payload: { userId: userId }});
+	}, [userId])
+	
   return (
-    <form className={FormStyles.formContainer} onSubmit={handlerValidationForm}>
-      <Input
+		<form className={FormStyles.formContainer} onSubmit={handlerValidationForm}>
+			<Input
 				isValid={isValid.title}
-        type="text"
+				type="text"
 				ref={titleRef}
-        placeholder="Title"
-        name="title"
-        value={values.title}
-        onChange={handlerOnChange}
-      />
-      <textarea
-        className={cn(FormStyles.textarea, {
-          [FormStyles.isValid]: !isValid.text,
-        })}
-        placeholder="Text"
-        name="text"
+				placeholder="Title"
+				name="title"
+				value={values.title}
+				onChange={handlerOnChange}
+			/>
+			<textarea
+				className={cn(FormStyles.textarea, {
+					[FormStyles.isValid]: !isValid.text,
+				})}
+				placeholder="Text"
+				name="text"
 				ref={textRef}
-        value={values.text}
-        onChange={handlerOnChange}
-      />
+				value={values.text}
+				onChange={handlerOnChange}
+			/>
 			<Input
 				isValid={isValid.date}
 				name="date"
@@ -100,9 +106,9 @@ export const Form: React.FC<FormProps> = ({ onSubmit }) => {
 				}
 				onChange={handlerOnChange}
 			/>
-      <button className={FormStyles.button} type="submit">
-        Сохранить
-      </button>
-    </form>
+			<button className={FormStyles.button} type="submit">
+				Сохранить
+			</button>
+		</form>
   );
 };
