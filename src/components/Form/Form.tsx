@@ -4,42 +4,36 @@ import { UserContext } from "../../context/user.context";
 import cn from "classnames";
 import { INITIAL_STATE, formReducer } from "./Form.state";
 import { Input } from "../Input/Input";
+import { FormItem } from "../Item/Item";
 
 type FormProps = {
-  onSubmit: (item: { title: string; text: string; date: Date; userId: number }) => void;
+  onSubmit: (item: FormItem) => void;
+  data: FormItem | null;
 };
 
-export const Form: React.FC<FormProps> = ({ onSubmit }) => {
+export const Form: React.FC<FormProps> = ({ onSubmit, data }) => {
   const [formState, dispatchForm] = useReducer(formReducer, INITIAL_STATE);
   const { isValid, isFormReadyToSubmit, values } = formState;
-	const titleRef = useRef<HTMLInputElement>(null);
-	const textRef = useRef<HTMLTextAreaElement>(null);
-	const dateRef = useRef<HTMLInputElement>(null);
-	const {userId} = useContext(UserContext);
-	
-	const focusError = (isValid:{ title:boolean, text:boolean, date:boolean})=>{
-		switch(true) {
-			case !isValid.title:
-				if (titleRef.current) {
-					titleRef.current.focus();
-				}
-				break;
-			case !isValid.text:
-				if (textRef.current) {
-					textRef.current.focus();
-				}
-				break;
-			case !isValid.date:
-				if (dateRef.current) {
-					dateRef.current.focus();
-				}
-				break;
-		}
-	}
+  const titleRef = useRef<HTMLInputElement>(null);
+  const textRef = useRef<HTMLTextAreaElement>(null);
+  const dateRef = useRef<HTMLInputElement>(null);
+  const { userId } = useContext(UserContext);
+
+  const focusError = (isValid: { title: boolean; text: boolean; date: boolean }) => {
+    if (!isValid.title && titleRef.current) {
+      titleRef.current.focus();
+    } else if (!isValid.text && textRef.current) {
+      textRef.current.focus();
+    } else if (!isValid.date && dateRef.current) {
+      dateRef.current.focus();
+    }
+  };
+
   const handlerValidationForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatchForm({ type: "SUBMIT" });
   };
+
   const handlerOnChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     dispatchForm({ type: "SET_VALUE", payload: { [name]: value } });
@@ -49,17 +43,24 @@ export const Form: React.FC<FormProps> = ({ onSubmit }) => {
     if (isFormReadyToSubmit) {
       onSubmit({
         ...values,
-				userId: userId,
+        userId: userId,
         date: new Date(values.date as string),
       });
       dispatchForm({ type: "CLEAR" });
+      dispatchForm({ type: "SET_VALUE", payload: { userId: userId } });
     }
-  }, [isFormReadyToSubmit, values, onSubmit]);
+  }, [isFormReadyToSubmit, values, onSubmit, userId]);
+
+  useEffect(() => {
+    if (data) {
+      dispatchForm({ type: "SET_VALUE", payload: { ...data } });
+    }
+  }, [data]);
 
   useEffect(() => {
     let timerId: ReturnType<typeof setTimeout>;
     if (!isValid.date || !isValid.text || !isValid.title) {
-			focusError(isValid)
+      focusError(isValid);
       timerId = setTimeout(() => {
         dispatchForm({ type: "RESET_VALIDITY" });
       }, 2000);
@@ -69,46 +70,46 @@ export const Form: React.FC<FormProps> = ({ onSubmit }) => {
     };
   }, [isValid]);
 
-	useEffect(()=>{
-		dispatchForm({ type: "SET_VALUE", payload: { userId: userId }});
-	}, [userId])
-	
+  useEffect(() => {
+    dispatchForm({ type: "SET_VALUE", payload: { userId: userId } });
+  }, [userId]);
+
   return (
-		<form className={FormStyles.formContainer} onSubmit={handlerValidationForm}>
-			<Input
-				isValid={isValid.title}
-				type="text"
-				ref={titleRef}
-				placeholder="Title"
-				name="title"
-				value={values.title}
-				onChange={handlerOnChange}
-			/>
-			<textarea
-				className={cn(FormStyles.textarea, {
-					[FormStyles.isValid]: !isValid.text,
-				})}
-				placeholder="Text"
-				name="text"
-				ref={textRef}
-				value={values.text}
-				onChange={handlerOnChange}
-			/>
-			<Input
-				isValid={isValid.date}
-				name="date"
-				type="date"
-				ref={dateRef}
-				value={
-					values.date
-						? new Date(values.date).toISOString().substring(0, 10)
-						: ""
-				}
-				onChange={handlerOnChange}
-			/>
-			<button className={FormStyles.button} type="submit">
-				Сохранить
-			</button>
-		</form>
+    <form className={FormStyles.formContainer} onSubmit={handlerValidationForm}>
+      <Input
+        isValid={isValid.title}
+        type="text"
+        ref={titleRef}
+        placeholder="Title"
+        name="title"
+        value={values.title}
+        onChange={handlerOnChange}
+      />
+      <textarea
+        className={cn(FormStyles.textarea, {
+          [FormStyles.isValid]: !isValid.text,
+        })}
+        placeholder="Text"
+        name="text"
+        ref={textRef}
+        value={values.text}
+        onChange={handlerOnChange}
+      />
+      <Input
+        isValid={isValid.date}
+        name="date"
+        type="date"
+        ref={dateRef}
+        value={
+          values.date
+            ? new Date(values.date).toISOString().substring(0, 10)
+            : ""
+        }
+        onChange={handlerOnChange}
+      />
+      <button className={FormStyles.button} type="submit">
+        Сохранить
+      </button>
+    </form>
   );
 };
