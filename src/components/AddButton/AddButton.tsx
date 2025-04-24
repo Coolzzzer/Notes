@@ -1,9 +1,13 @@
 import AddButtonStyles from "./AddButton.module.css";
+import { FormItem } from "../Item/Item";
 
-export const AddButton:React.FC = () =>{
+type AddButtonProps = {
+	onClearForm: (item: FormItem) => void;
+};
+export const AddButton:React.FC<AddButtonProps> = ({onClearForm}) =>{
 	return(
 		<>
-			<button>
+			<button onClick={onClearForm}>
 				<img src="plus.svg" width="10px"/> Новое воспоминание
 			</button>
 		</>

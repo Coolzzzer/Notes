@@ -6,6 +6,7 @@ import { Form } from "./components/Form/Form";
 import { useLocalstorage } from "./hooks/useLocalstorage";
 import { UserContextProvider } from "./context/user.context";
 import { DataItem, FormItem } from "./components/Item/Item";
+import { AddButton } from "./components/AddButton/AddButton";
 
 export const App: React.FC = () => {
   const [items, setItems] = useLocalstorage<DataItem[]>("data", []);
@@ -37,15 +38,19 @@ export const App: React.FC = () => {
       );
     }
   };
+	const deleteItem = (id:number) =>{	
+		setItems([...items.filter(i => i.id !== id)])
+	}
 
   return (
     <UserContextProvider>
       <div style={{ display: "flex", width: "150vh" }}>
         <Left>
+					<AddButton onClearForm={()=>setSelectedItem(null)}></AddButton>
           <List items={mapItems(items)} setItem={setSelectedItem} />
         </Left>
         <Body>
-          <Form onSubmit={addItem} data={selectedItem} />
+          <Form onSubmit={addItem} data={selectedItem} onDelete={deleteItem}/>
         </Body>
       </div>
     </UserContextProvider>

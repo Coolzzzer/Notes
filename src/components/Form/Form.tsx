@@ -9,9 +9,10 @@ import { FormItem } from "../Item/Item";
 type FormProps = {
   onSubmit: (item: FormItem) => void;
   data: FormItem | null;
+	onDelete: (item: FormItem) => void;
 };
 
-export const Form: React.FC<FormProps> = ({ onSubmit, data }) => {
+export const Form: React.FC<FormProps> = ({ onSubmit, data, onDelete }) => {
   const [formState, dispatchForm] = useReducer(formReducer, INITIAL_STATE);
   const { isValid, isFormReadyToSubmit, values } = formState;
   const titleRef = useRef<HTMLInputElement>(null);
@@ -52,9 +53,11 @@ export const Form: React.FC<FormProps> = ({ onSubmit, data }) => {
   }, [isFormReadyToSubmit, values, onSubmit, userId]);
 
   useEffect(() => {
-    if (data) {
-      dispatchForm({ type: "SET_VALUE", payload: { ...data } });
+    if (!data) {
+			dispatchForm({ type: "CLEAR" });
+      dispatchForm({ type: "SET_VALUE", payload: { userId: userId } });
     }
+		dispatchForm({ type: "SET_VALUE", payload: { ...data } });
   }, [data]);
 
   useEffect(() => {
@@ -73,9 +76,15 @@ export const Form: React.FC<FormProps> = ({ onSubmit, data }) => {
   useEffect(() => {
     dispatchForm({ type: "SET_VALUE", payload: { userId: userId } });
   }, [userId]);
+	const deleteItem = () =>{
+		onDelete(data.id)
+		dispatchForm({ type: "CLEAR" });
+		dispatchForm({ type: "SET_VALUE", payload: { userId: userId } });
+	}
 
   return (
     <form className={FormStyles.formContainer} onSubmit={handlerValidationForm}>
+			{data?.id && <button type="button" onClick={()=>deleteItem()}>Delete</button>}
       <Input
         isValid={isValid.title}
         type="text"
