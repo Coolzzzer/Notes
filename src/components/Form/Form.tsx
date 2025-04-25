@@ -23,11 +23,11 @@ export const Form: React.FC<FormProps> = ({ onSubmit, data, onDelete }) => {
   const focusError = (isValid: { title: boolean; text: boolean; date: boolean }) => {
     if (!isValid.title && titleRef.current) {
       titleRef.current.focus();
-    } else if (!isValid.text && textRef.current) {
-      textRef.current.focus();
     } else if (!isValid.date && dateRef.current) {
       dateRef.current.focus();
-    }
+    } else if (!isValid.text && textRef.current) {
+      textRef.current.focus();
+    } 
   };
 
   const handlerValidationForm = (e: React.FormEvent<HTMLFormElement>) => {
@@ -62,7 +62,7 @@ export const Form: React.FC<FormProps> = ({ onSubmit, data, onDelete }) => {
 
   useEffect(() => {
     let timerId: ReturnType<typeof setTimeout>;
-    if (!isValid.date || !isValid.text || !isValid.title) {
+    if ( !isValid.text || !isValid.date || !isValid.title) {
       focusError(isValid);
       timerId = setTimeout(() => {
         dispatchForm({ type: "RESET_VALIDITY" });
@@ -84,7 +84,6 @@ export const Form: React.FC<FormProps> = ({ onSubmit, data, onDelete }) => {
 
   return (
     <form className={FormStyles.formContainer} onSubmit={handlerValidationForm}>
-			{data?.id && <button type="button" onClick={()=>deleteItem()}>Delete</button>}
       <Input
         isValid={isValid.title}
         type="text"
@@ -92,6 +91,18 @@ export const Form: React.FC<FormProps> = ({ onSubmit, data, onDelete }) => {
         placeholder="Title"
         name="title"
         value={values.title}
+        onChange={handlerOnChange}
+      />
+			<Input
+        isValid={isValid.date}
+        name="date"
+        type="date"
+        ref={dateRef}
+        value={
+          values.date
+            ? new Date(values.date).toISOString().substring(0, 10)
+            : ""
+        }
         onChange={handlerOnChange}
       />
       <textarea
@@ -104,21 +115,12 @@ export const Form: React.FC<FormProps> = ({ onSubmit, data, onDelete }) => {
         value={values.text}
         onChange={handlerOnChange}
       />
-      <Input
-        isValid={isValid.date}
-        name="date"
-        type="date"
-        ref={dateRef}
-        value={
-          values.date
-            ? new Date(values.date).toISOString().substring(0, 10)
-            : ""
-        }
-        onChange={handlerOnChange}
-      />
-      <button className={FormStyles.button} type="submit">
-        Сохранить
-      </button>
+			<div className={FormStyles.containerButton}>
+				<button className={FormStyles.button} type="submit">
+					Save
+				</button>
+				{data?.id && <button className={FormStyles.deleteButton} type="button" onClick={()=>deleteItem()}>Delete</button>}
+			</div>
     </form>
   );
 };

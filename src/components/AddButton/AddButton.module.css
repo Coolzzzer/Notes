@@ -1,0 +1,12 @@
+.button{
+	width: 10vw;
+	background-color: rgb(92, 92, 92);
+	border: none;
+}	
+.button:hover {
+  background-color: #464545; 
+}
+
+.button:active {
+  background-color: #2e2e2e; 
+}

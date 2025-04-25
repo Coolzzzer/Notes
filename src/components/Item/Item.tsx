@@ -25,9 +25,10 @@ export const Item: React.FC<ItemProps> = ({ data, ...rest }) => {
   const formatDate = new Intl.DateTimeFormat("ru-RU").format(data.date);
   return (
     <button {...rest} className={ItemStyles.itemContainer}>
-      <h2>{data.title}</h2>
+			<div className={ItemStyles.itemDate}>{formatDate}</div>
+      <div className={ItemStyles.itemTitle}>{data.title}</div>
       <div>
-        <h4>{formatDate} {data.text}</h4>
+        <div className={ItemStyles.itemText}> {data.text}</div>
       </div>
     </button>
   );

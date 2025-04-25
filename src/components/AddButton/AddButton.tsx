@@ -7,8 +7,8 @@ type AddButtonProps = {
 export const AddButton:React.FC<AddButtonProps> = ({onClearForm}) =>{
 	return(
 		<>
-			<button onClick={onClearForm}>
-				<img src="plus.svg" width="10px"/> Новое воспоминание
+			<button onClick={onClearForm} className={AddButtonStyles.button}>
+				<img src="plus.svg" width="10px"/> New note
 			</button>
 		</>
 	)

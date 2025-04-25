@@ -1,14 +1,11 @@
 .formContainer {
   display: flex;
   flex-direction: column;
-  gap: 15px; 
-  background-color: #f9f9f9; 
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  gap: 2%; 
+  background-color: #292929; 
+  padding: 4%;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
   width: 100%; 
-  max-width: 500px; 
   box-sizing: border-box;
   margin: 0 auto; 
 	height: 100%;
@@ -16,22 +13,23 @@
 
 .textarea {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1rem;
-  color: #333;
+  padding: 1%;
+  border: none;
+  color: #acacac;
   box-sizing: border-box; 
+	resize: none; 
+  height: 50vh; 
+	background-color: #383737; 
+	scrollbar-color: #444444 #353535;
+	padding: 1vw;
 }
-
-.textarea {
-  resize: none; 
-  height: 200px; 
+.containerButton{
+	display: flex;
+	justify-content: center;
 }
-
-.button {
-  background-color: #4caf50; 
-  color: white;
+.button,.deleteButton {
+  background-color: #616161; 
+  color: rgb(216, 213, 213);
   font-size: 1rem;
   font-weight: bold;
   padding: 10px 15px;
@@ -39,22 +37,21 @@
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+	width: 15vw;
+	margin: 1vw;
+}
+.button:hover,.deleteButton:hover {
+  background-color: #464545; 
 }
 
-.button:hover {
-  background-color: #45a049; 
+.button:active,.deleteButton:active {
+  background-color: #2e2e2e; 
 }
 
-.button:active {
-  background-color: #3e8e41; 
-}
-
-.button:disabled {
+.button:disabled,.deleteButton:disabled {
   background-color: #ccc; 
   cursor: not-allowed;
 }
 .isValid{
-	border: 1px solid red;
-	background: rgba(202, 16, 16, 0.753);
-	color: white;
+	background: rgb(153, 26, 26);
 }

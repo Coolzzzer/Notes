@@ -6,7 +6,7 @@ export const Header:React.FC = () =>{
 
 	return(
 		<>
-			<Logo image={'/logo.svg'}/>
+			<Logo image={'/notebook-pen-icon.svg'}/>
 			<SelectUser/>
 		</>
 	)

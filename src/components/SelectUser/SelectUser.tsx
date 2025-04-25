@@ -10,7 +10,7 @@ export const SelectUser:React.FC = () =>{
 		setUserId(Number(e.currentTarget.value))
 	}
 	return(
-			<select name="user" id="user" onChange={changeUser} value={userId}> 
+			<select className={SelectUserStyles.select} name="user" id="user" onChange={changeUser} value={userId} > 
 				<option value="1">Vika </option>
 				<option value="2">Andrey</option>
 			</select>

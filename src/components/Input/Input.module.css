@@ -1,19 +1,16 @@
 .input {
   width: 100%;
   padding: 10px;
-  border: 1px solid #977878;
-  border-radius: 4px;
+	border: none;
   font-size: 1rem;
-  color: #333;
+  color: #acacac;
   box-sizing: border-box; 
-
+	background-color: #383737; 
 }
 
 .input[type="date"] {
   font-size: 0.9rem;
 }
 .isValid{
-	border: 1px solid red;
-	background: rgba(202, 16, 16, 0.753);
-	color: white;
+	background: rgb(153, 26, 26);
 }
